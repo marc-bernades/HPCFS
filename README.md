@@ -4,6 +4,7 @@ High-Pressure Compressible Flow Solver
 This is written and developed by Marc Bernades during the PhD (2021-2024). The solver is open source but its distribution is forbidden unless previously accepted at request, each usage must be cited accordingly.
 
 1. Introduction
+   
 The solver is MATLAB-based high-fidelity DNS with the main target to serve a flexible tool to develop methods, numerical schemes and design new cases and approaches which includes both low-pressure (ideal-gas) and high-pressure (real-gas) frameworks. The solver is well-commented, but in addition to its comments there is a "Read me" guide with the main instructions and definitions to avoid confusion.
 The solver is not designed to run large 3D DNS cases although 3D (and large) cases can also be computed, in other words, it is not parallelized and its computation speed is not optimized and limited to the single-core machine capacity. Nevertheless, it is recommended to use HPC-based solvers to run large scales problems. Our research group provides RHEA, an open source C++ DNS solver to run on extra-scale.
 
@@ -16,6 +17,7 @@ The DNS can compute the tyical canonical geometries on a cartasian domain with p
 Furthermore, the user can implement any further test, providing that the new test dependant (name, initial conditions and any additional feature are correctly modelled).
 
 2. Discretization
+   
 The solver is discretized on a cartesian grid (X,Y,Z) with uniform mesh with stretching functionality along each of the direction seperatly.
 The discretization has N inner grid points + 2 additional outer grid points which are used to set and adjust the boundary conditions (reference to the instruction guide).
 The main objective of the PhD is working on high-pressure turbulence, hence, within this environment the simulations are strongly susceptible to numerical instabilities due to the presence of nonlinear thermodynamic phenomena and large density gradients, which can trigger spurious pressure oscillations that may contaminate the solution and even lead to its divergence.
@@ -27,6 +29,7 @@ The convective terms are expanded according to the Kennedy-Gruber-Pirozzoli (KGP
 As a result, the method utilized (i) preserves kinetic energy by convection, (ii) is locally conservative for mass and momentum, (iii) preserves pressure equilibrium and (iv) yields stable and robust numerical simulations without adding any numerical diffusion to the solution or stabilization procedures.
 
 3. Thermodynamics
+   
 The thermodynamic space of solutions for the state variables pressure $P$, temperature $T$, and density $\rho$ of a single substance is described by an equation of state.
 One popular choice for systems at high pressures, which is used in this study, is the Peng-Robinson. In addition, the user will have the ideal-gas equation of state available
 The high pressures involved in the analyses conducted in this work prevent the use of simple relations for the calculation of the dynamic viscosity $\mu$ and thermal conductivity $\kappa$.
