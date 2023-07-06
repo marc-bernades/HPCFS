@@ -2,6 +2,7 @@
 HPCFS instructions, setup and procedure
 
 1. Set Problem Parameters
+
 Each of the "Main (+ test ID)" matlab files will need to be adjusted based on test objectives and the functions to run will be common for all. In each test file the user needs to set:
 - Solver: Ideal or Real.
 - Substance: defined on substance library function, currently implemented for N2 and CO2 or ideal-gas
@@ -40,10 +41,12 @@ The boundary conditions are to be defined based on the self-intuitive comments o
 
 
 2. Compressible flow solver (HPCFS)
+
 Based on "compressibe_solver.m" function where the inputs are previously defined by the problem parameters. The structure of this function is the same regardless the type of test
 This will save on the workspace the output functions. However, data will be saved for each snapshot as well which can be further postprocessed
 
 3. Embedded setup functions
+
 In case user desires to adjust further flexibility to create new tests or add functionalities, here a brief of test-dependant functions is listed:
 - Initialize_Fields: sets the u,v,w,P,T fields depending on the selected test. Hence, user can modify this function to obtain any additional initial conditions.
 For analytical solution-known tests, the initial condition is based on "Reference_Solution_X.m" function (i.e., 1D advective test)
