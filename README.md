@@ -57,4 +57,6 @@ The main validation test results are also enclose on the repositary, but they ca
 - 3D TGV ideal-gas inviscid to validate the invariants of transported and induced quantities (Coppola AMR 2019)
 - Enthalpy split comparison discretizing rhoE or independently the internal and kineatic energy counterparts.
 
+5. Postprocess
 
+The repository will also contain postprocess functions to evaluate the snapshots saved from the simulation outputs and additional plot functionalities.
