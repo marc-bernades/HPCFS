@@ -11,22 +11,24 @@ The solver is not designed to run large 3D DNS cases although 3D (and large) cas
 To this extent, this DNS code supports numerical methods to simulate transcritical turbulent flows based on Peng-Robinson equation of state and high-pressure coefficients.
 
 The DNS can compute the tyical canonical geometries on a cartasian domain with potential to stretch on either direction. The current tests are:
-- 1D high-pressure sweep
-- 1D advective
+- 1D High-pressure sweep
+- 1D Advective
 - 2D TGV
 - 3D TGV (viscous and inviscid)
-- 2D mixing layer (also periodic version)
-- 2D channel flow
+- 2D Mixing layer (also periodic version)
+- 2D Vortex advection
+- 2D Lid-driven cavity
+- 2D Channel flow
 
 Nevertheless, the main purpose of this distribution is to replicate the results obtained on the numerical assessment benchmark (Kinetic-energy- and pressure-equilibrium-preserving schemes for real-gas turbulence in the transcritical regime, Bernades et al 2023, JCP). To this extent the test supplied with extensive documentation to mimic the results are based on the following, although the repositary contains the complete wide range of tests designed:
-- 1D advective
+- 1D Advective
 - 2D Mixing layer
 
 Furthermore, the user can implement any further test, providing that the new test dependant (name, initial conditions and any additional feature are correctly modelled).
 
 2. Discretization
    
-The solver is discretized on a cartesian grid (X,Y,Z) with uniform mesh with stretching functionality along each of the direction seperatly.
+The solver is discretized on a finite-difference second-order scheme on a cartesian grid (X,Y,Z) with uniform mesh with stretching functionality along each of the direction seperatly.
 The discretization has N inner grid points + 2 additional outer grid points which are used to set and adjust the boundary conditions (reference to the instruction guide).
 The main objective of the PhD is working on high-pressure turbulence, hence, within this environment the simulations are strongly susceptible to numerical instabilities due to the presence of nonlinear thermodynamic phenomena and large density gradients, which can trigger spurious pressure oscillations that may contaminate the solution and even lead to its divergence.
 Consequently, it is highly beneficial that the numerical schemes utilized, in addition to being kinetic-energy preserving (KEP), attain the so-called pressure-equilibrium-preservation (PEP) property. The numerical scheme utilized in this work has been developed specifically to be simultaneously KEP and PEP. The latter property is achieved by solving a pressure evolution equation.
@@ -43,3 +45,16 @@ One popular choice for systems at high pressures, which is used in this study, i
 The high pressures involved in the analyses conducted in this work prevent the use of simple relations for the calculation of the dynamic viscosity $\mu$ and thermal conductivity $\kappa$.
 In this regard, standard methods for computing these coefficients for Newtonian fluids are based on the correlation expressions proposed by Chung et al.
 These correlation expressions are mainly function of critical temperature $T_c$ and density $\rho_c$, molecular weight $W$, acentric factor $\omega$, association factor $\kappa_a$ and dipole moment $\mathcal{M}$, and the NASA 7-coefficient polynomial~\citep{Burcat2005-TR}; further details can be found in dedicated works, like for example Poling.
+
+4. Validation
+
+The main validation test results are also enclose on the repositary, but they can be summarized as follows. The roboustness of the code has ensure sucessfull results in all the analysis and investigations performed.
+
+- The former order of accuracy of the spatial discretization (second order) and the time intergator (Runge-kutta 4th order - or the order selected by user).
+- Real gas Thermodynamics: Peng-Robinson equation of state implementation and high-pressure coefficients based on Chung et al. validated against NIST in different sub-, trans- and supercritical conditions (for example using the 1D High-pressure test to evaluate the thermodynamic model at different input conditions).
+- Viscous scheme validated using lid-driven cavity (Ghia et al. 1982)
+- 2D Vortex advection based on Pirozzoli JCP 2011 Vortex test
+- 3D TGV ideal-gas inviscid to validate the invariants of transported and induced quantities (Coppola AMR 2019)
+- Enthalpy split comparison discretizing rhoE or independently the internal and kineatic energy counterparts.
+
+
