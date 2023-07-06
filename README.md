@@ -10,7 +10,15 @@ The solver is not designed to run large 3D DNS cases although 3D (and large) cas
 
 To this extent, this DNS code supports numerical methods to simulate transcritical turbulent flows based on Peng-Robinson equation of state and high-pressure coefficients.
 
-The DNS can compute the tyical canonical geometries on a cartasian domain with potential to stretch on either direction. The current tests are 1D high-pressure sweep, 1D advective, 2D TGV, 3D TGV (viscous and inviscid), 2D mixing layer, 2D and 3D channel flow. In this regard, the main purpose of this distribution is to replicate the results obtained on the numerical assessment benchmark (Kinetic-energy- and pressure-equilibrium-preserving schemes for real-gas turbulence in the transcritical regime, Bernades et al 2023, JCP). To this extent the test supplied with extensive documentation to mimic the results are:
+The DNS can compute the tyical canonical geometries on a cartasian domain with potential to stretch on either direction. The current tests are:
+- 1D high-pressure sweep
+- 1D advective
+- 2D TGV
+- 3D TGV (viscous and inviscid)
+- 2D mixing layer (also periodic version)
+- 2D channel flow
+
+Nevertheless, the main purpose of this distribution is to replicate the results obtained on the numerical assessment benchmark (Kinetic-energy- and pressure-equilibrium-preserving schemes for real-gas turbulence in the transcritical regime, Bernades et al 2023, JCP). To this extent the test supplied with extensive documentation to mimic the results are based on the following, although the repositary contains the complete wide range of tests designed:
 - 1D advective
 - 2D Mixing layer
 
