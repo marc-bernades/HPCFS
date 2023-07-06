@@ -51,3 +51,8 @@ In case user desires to adjust further flexibility to create new tests or add fu
 - Initialize_Fields: sets the u,v,w,P,T fields depending on the selected test. Hence, user can modify this function to obtain any additional initial conditions.
 For analytical solution-known tests, the initial condition is based on "Reference_Solution_X.m" function (i.e., 1D advective test)
 - Filter_Matrix: one of the filter functions if implicit F2 or F4 options. Hence, inside these functions the user cna adjust the alpha_f governing parameter, while the type of filter (F2 or F4) for an implicit selection will be defined within the main function "Compressible_solver.m"
+
+4. Postprocess
+
+The repository also contains postprocess scripts to evaluate the data output from the simulations for each of the cases. Hence, as a baseline to assess the results and identify the main matrics arisen by each test.
+Additionally, there are functions to plot results straight after the simulations in Matlab workspace environment, should this help in initial investigation process.
