@@ -5,7 +5,7 @@ This is written and developed by Marc Bernades during the PhD (2021-2024). The s
 
 1. Introduction
    
-The solver is MATLAB-based high-fidelity DNS with the main target to serve a flexible tool to develop methods, numerical schemes and design new cases and approaches which includes both low-pressure (ideal-gas) and high-pressure (real-gas) frameworks. The solver is well-commented, but in addition to its comments there is a "Read me" guide with the main instructions and definitions to avoid confusion.
+The solver is MATLAB-based high-fidelity DNS with the main target to serve a flexible tool to develop methods, numerical schemes and design new cases and approaches which includes both low-pressure (ideal-gas) and high-pressure (real-gas) frameworks. The solver is well-commented, but in addition to its comments there is a "Instructions" guide with the main instructions and definitions to avoid confusion.
 The solver is not designed to run large 3D DNS cases although 3D (and large) cases can also be computed, in other words, it is not parallelized and its computation speed is not optimized and limited to the single-core machine capacity. Nevertheless, it is recommended to use HPC-based solvers to run large scales problems. Our research group provides RHEA, an open source C++ DNS solver to run on extra-scale.
 
 To this extent, this DNS code supports numerical methods to simulate transcritical turbulent flows based on Peng-Robinson equation of state and high-pressure coefficients.
