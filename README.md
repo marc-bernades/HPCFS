@@ -18,7 +18,7 @@ The DNS can compute the tyical canonical geometries on a cartasian domain with p
 - 2D Mixing layer (also periodic version)
 - 2D Vortex advection
 - 2D Lid-driven cavity
-- 2D Channel flow
+- 2D Channel flow (and 3D)
 
 Nevertheless, the main purpose of this distribution is to replicate the results obtained on the numerical assessment benchmark (Kinetic-energy- and pressure-equilibrium-preserving schemes for real-gas turbulence in the transcritical regime, Bernades et al 2023, JCP). To this extent the test supplied with extensive documentation to mimic the results are based on the following, although the repositary contains the complete wide range of tests designed:
 - 1D Advective
@@ -57,6 +57,12 @@ The main validation test results are also enclose on the repositary, but they ca
 - 3D TGV ideal-gas inviscid to validate the invariants of transported and induced quantities (Coppola AMR 2019)
 - Enthalpy split comparison discretizing rhoE or independently the internal and kineatic energy counterparts.
 
-5. Postprocess
+5. Data output
+
+Based on the user pre-defined timestamp, different snapshots will be saved. There will be a pair of files, (i) a file containing the instantaneous fields and (ii) a file containing time-data for each time step up to this instant, these will be the first and second order invariants and kinetic energy.
+The structure of data output will be the name defined plus the timestamp in csv format and the time will be distinguished by "_time" in the end of the file name.
+
+6. Postprocess
 
 The repository will also contain postprocess functions to evaluate the snapshots saved from the simulation outputs and additional plot functionalities.
+In any case, the results can be postprocessed by the user with any other tool using the output data in comma-separated values format.
