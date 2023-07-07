@@ -33,7 +33,7 @@ The discretization has N inner grid points + 2 additional outer grid points whic
 The main objective of the PhD is working on high-pressure turbulence, hence, within this environment the simulations are strongly susceptible to numerical instabilities due to the presence of nonlinear thermodynamic phenomena and large density gradients, which can trigger spurious pressure oscillations that may contaminate the solution and even lead to its divergence.
 Consequently, it is highly beneficial that the numerical schemes utilized, in addition to being kinetic-energy preserving (KEP), attain the so-called pressure-equilibrium-preservation (PEP) property. The numerical scheme utilized in this work has been developed specifically to be simultaneously KEP and PEP. The latter property is achieved by solving a pressure evolution equation.
 In brief, the transport equations are numerically solved by adopting a standard semi-discretization procedure; viz. they are first discretized in space and then integrated in time.
-In particular, spatial operators are treated using second-order central-differencing schemes, and time-advancement is performed by means of a third-order strong-stability preserving (SSP) Runge-Kutta explicit approach.
+In particular, spatial operators are treated using second-order central-differencing schemes, and time-advancement is performed by means of a third-order (or four-order) strong-stability preserving (SSP) Runge-Kutta explicit approach with Courant–Friedrichs–Lewy (CFL) stability criterion.
 The temporal errors that arise due to the time-integration scheme are assumed to be kept under control by using sufficiently small time steps.
 The convective terms are expanded according to the Kennedy-Gruber-Pirozzoli (KGP) splitting, which has been recently assessed for high-pressure supercritical fluids turbulence.
 As a result, the method utilized (i) preserves kinetic energy by convection, (ii) is locally conservative for mass and momentum, (iii) preserves pressure equilibrium and (iv) yields stable and robust numerical simulations without adding any numerical diffusion to the solution or stabilization procedures.
@@ -44,7 +44,7 @@ The thermodynamic space of solutions for the state variables pressure $P$, tempe
 One popular choice for systems at high pressures, which is used in this study, is the Peng-Robinson. In addition, the user will have the ideal-gas equation of state available
 The high pressures involved in the analyses conducted in this work prevent the use of simple relations for the calculation of the dynamic viscosity $\mu$ and thermal conductivity $\kappa$.
 In this regard, standard methods for computing these coefficients for Newtonian fluids are based on the correlation expressions proposed by Chung et al.
-These correlation expressions are mainly function of critical temperature $T_c$ and density $\rho_c$, molecular weight $W$, acentric factor $\omega$, association factor $\kappa_a$ and dipole moment $\mathcal{M}$, and the NASA 7-coefficient polynomial~\citep{Burcat2005-TR}; further details can be found in dedicated works, like for example Poling.
+These correlation expressions are mainly function of critical temperature $T_c$ and density $\rho_c$, molecular weight $W$, acentric factor $\omega$, association factor $\kappa_a$ and dipole moment $\mathcal{M}$, and the NASA 7-coefficient polynomial (Burcat, 2005); further details can be found in dedicated works, like for example Poling.
 
 4. Validation
 
