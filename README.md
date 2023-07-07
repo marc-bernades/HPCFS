@@ -5,10 +5,10 @@ This is written and developed by Marc Bernades during the PhD (2021-2024). The s
 
 1. Introduction
    
-The solver is MATLAB-based high-fidelity DNS with the main target to serve a flexible tool to develop methods, numerical schemes and design new cases and approaches which includes both low-pressure (ideal-gas) and high-pressure (real-gas) frameworks. The solver is well-commented, but in addition to its comments there is a "Instructions" guide with the main instructions and definitions to avoid confusion.
+The solver is MATLAB-based high-fidelity DNS with the main target to serve a flexible tool to develop methods, numerical schemes and design new cases and approaches which includes both low-pressure (ideal-gas) and high-pressure (real-gas) frameworks. The solver is well-commented, but in addition to its comments there is a "Instructions" guide with the main setup steps and definitions to avoid confusion.
 The solver is not designed to run large 3D DNS cases although 3D (and large) cases can also be computed, in other words, it is not parallelized and its computation speed is not optimized and limited to the single-core machine capacity. Nevertheless, it is recommended to use HPC-based solvers to run large scales problems. Our research group provides RHEA, an open source C++ DNS solver to run on extra-scale.
 
-To this extent, this DNS code supports numerical methods to simulate transcritical turbulent flows based on Peng-Robinson equation of state and high-pressure coefficients.
+To this extent, this DNS code supports numerical methods to simulate transcritical turbulent flows based on Peng-Robinson equation of state and high-pressure coefficients based on finite difference second order discretization stencil.
 
 The DNS can compute the tyical canonical geometries on a cartasian domain with potential to stretch on either direction. The current tests are:
 - 1D High-pressure sweep
@@ -59,8 +59,9 @@ The main validation test results are also enclose on the repositary, but they ca
 
 5. Data output
 
+The discretization is computed based on meshgrid MATLAB functions, as a consequence the grid is transposed so that x-direction is horizontal on the physical space and y-direction vertical. Therefore, the first position of the matrix is for y-direction, second for x-direction and third for z-direction, it is important to consider for plotting and post-processing.
 Based on the user pre-defined timestamp, different snapshots will be saved. There will be a pair of files, (i) a file containing the instantaneous fields and (ii) a file containing time-data for each time step up to this instant, these will be the first and second order invariants and kinetic energy.
-The structure of data output will be the name defined plus the timestamp in csv format and the time will be distinguished by "_time" in the end of the file name.
+The structure of data output will be the name defined plus the timestamp in csv format for instanteneous snapshot and the time will be distinguished by "_time" in the end of the file name for the invariants file.
 
 6. Postprocess
 
