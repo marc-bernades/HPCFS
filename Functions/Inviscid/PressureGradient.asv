@@ -1,0 +1,19 @@
+function [dP_x_u, dP_y_v, dP_z_w, dP_E] = PressureGradient(P,X,Y,Z)
+
+    % Delta x, y and z based on gradient
+    [dx,~,~] = gradient(X);
+    [~,dy,~] = gradient(Y);
+    [~,~,dz] = gradient(Z);
+    dx = dx/2;
+    dy = dy/2;
+    dz = dz/2;
+    % Gradient computes de 2nd order derivative with respect to x,y,z
+    [dP_x,dP_y,dP_z]             = gradient(P);
+    dP_x_u = dP_x./(2*dx);
+    dP_y_v = dP_y./(2*dy);
+    dP_z_w = dP_z./(2*dz);
+
+    dP_E = 
+
+end
+

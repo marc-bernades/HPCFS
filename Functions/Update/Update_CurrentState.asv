@@ -1,0 +1,4 @@
+function Update_CurrentState(a,b)
+    a = b;
+end
+

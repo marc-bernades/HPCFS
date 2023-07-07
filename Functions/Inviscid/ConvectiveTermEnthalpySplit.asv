@@ -1,0 +1,208 @@
+function [C_D, C_u, C_fi, C_rho, C_L] = ConvectiveTermEnthalpySplit(rho,u,v,w,E,rhou,rhov,rhow,rhoE,X,Y,Z,P)
+    
+    % Delta x, y and z based on CentralDerivative_d1_2ndOrder
+    [dx,~,~] = CentralDerivative_d1_2ndOrder(X);
+    [~,dy,~] = CentralDerivative_d1_2ndOrder(Y);
+    [~,~,dz] = CentralDerivative_d1_2ndOrder(Z);
+
+    % Calculate enthalpy to make its splitting (includes pressure CentralDerivative_d1_2ndOrder)
+    h    = E + P./rho;
+    rhoh = rho.*h;
+
+    % CentralDerivative_d1_2ndOrder computes de 2nd order derivative with respect to x,y,z
+    [du_x,du_y,du_z]             = CentralDerivative_d1_2ndOrder(u);
+    [dv_x,dv_y,dv_z]             = CentralDerivative_d1_2ndOrder(v);
+    [dw_x,dw_y,dw_z]             = CentralDerivative_d1_2ndOrder(w);
+    [drho_x,drho_y,drho_z]       = CentralDerivative_d1_2ndOrder(rho);
+    [dh_x,  dh_y,  dh_z]         = CentralDerivative_d1_2ndOrder(h);
+
+    [duu_x,~,~]                  = CentralDerivative_d1_2ndOrder(u.*u);
+    [~,    dvv_y,~]              = CentralDerivative_d1_2ndOrder(v.*v);
+    [~,    ~,    dww_z]          = CentralDerivative_d1_2ndOrder(w.*w);
+
+    [duv_x,duv_y,~]              = CentralDerivative_d1_2ndOrder(u.*v);
+    [duw_x,~,    duw_z]          = CentralDerivative_d1_2ndOrder(u.*w);
+    [~,    dvw_y,dvw_z]          = CentralDerivative_d1_2ndOrder(v.*w);
+
+    [duh_x,~,    ~]              = CentralDerivative_d1_2ndOrder(u.*h);
+    [~,    dvh_y,~]              = CentralDerivative_d1_2ndOrder(v.*h);
+    [~,    ~,    dwh_z]          = CentralDerivative_d1_2ndOrder(w.*h);
+
+    [drhou_x,drhou_y,drhou_z]    = CentralDerivative_d1_2ndOrder(rhou);
+    [drhov_x,drhov_y,drhov_z]    = CentralDerivative_d1_2ndOrder(rhov);
+    [drhow_x,drhow_y,drhow_z]    = CentralDerivative_d1_2ndOrder(rhow);
+    [drhoh_x,drhoh_y,drhoh_z]    = CentralDerivative_d1_2ndOrder(rhoh);
+
+    [drhouu_x,~,       ~]        = CentralDerivative_d1_2ndOrder(rhou.*u);
+    [~,       drhovv_y,~]        = CentralDerivative_d1_2ndOrder(rhov.*v);
+    [~,        ~,      drhoww_z] = CentralDerivative_d1_2ndOrder(rhow.*w);
+
+    [drhouv_x,drhouv_y,~]        = CentralDerivative_d1_2ndOrder(rhou.*v);
+    [drhouw_x,~,       drhouw_z] = CentralDerivative_d1_2ndOrder(rhou.*w);
+    [~,       drhovw_y,drhovw_z] = CentralDerivative_d1_2ndOrder(rhov.*w);
+    
+    [drhouh_x,~       ,~]        = CentralDerivative_d1_2ndOrder(rhou.*h);
+    [~       ,drhovh_y,~]        = CentralDerivative_d1_2ndOrder(rhov.*h);
+    [~       ,~       ,drhowh_z] = CentralDerivative_d1_2ndOrder(rhow.*h);
+
+
+    %% Convective terms
+    % CD - Divergence
+    rho_conv  = drhou_x./(dx)  + drhov_y./(dy)  + drhow_z./(dz);
+    rhou_conv = drhouu_x./(dx) + drhouv_y./(dy) + drhouw_z./(dz);
+    rhov_conv = drhouv_x./(dx) + drhovv_y./(dy) + drhovw_z./(dz);
+    rhow_conv = drhouw_x./(dx) + drhovw_y./(dy) + drhoww_z./(dz);
+    rhoE_conv = drhouh_x./(dx) + drhovh_y./(dy) + drhowh_z./(dz);
+
+    % Set outer points to 0
+    rho_conv([1,end],:,:)    = 0;
+    rho_conv(:,[1,end],:)    = 0;
+    rho_conv(:,:,[1,end])    = 0;
+    rhou_conv([1,end],:,:)   = 0;
+    rhou_conv(:,[1,end],:)   = 0;
+    rhou_conv(:,:,[1,end])   = 0;
+    rhov_conv([1,end],:,:)   = 0;
+    rhov_conv(:,[1,end],:)   = 0;
+    rhov_conv(:,:,[1,end])   = 0;
+    rhow_conv([1,end],:,:)   = 0;
+    rhow_conv(:,[1,end],:)   = 0;
+    rhow_conv(:,:,[1,end])   = 0;
+    rhoE_conv([1,end],:,:)   = 0;
+    rhoE_conv(:,[1,end],:)   = 0;
+    rhoE_conv(:,:,[1,end])   = 0;
+
+    C_D = {rho_conv, rhou_conv, rhov_conv, rhow_conv, rhoE_conv};
+
+    % C_u - Advective
+    rho_conv  = u.*drho_x./(dx)  + v.*drho_y./(dy)  + w.*drho_z./(dz) + ...
+         rho.*du_x./(dx)  + rho.*dv_y./(dy)  + rho.*dw_z./(dz);
+    rhou_conv = u.*drhou_x./(dx)  + v.*drhou_y./(dy)  + w.*drhou_z./(dz) + ...
+         rhou.*du_x./(dx)  + rhou.*dv_y./(dy)  + rhou.*dw_z./(dz);
+    rhov_conv = u.*drhov_x./(dx)  + v.*drhov_y./(dy)  + w.*drhov_z./(dz) + ...
+        rhov.*du_x./(dx)  + rhov.*dv_y./(dy)  + rhov.*dw_z./(dz);
+    rhow_conv = u.*drhow_x./(dx)  + v.*drhow_y./(dy)  + w.*drhow_z./(dz) + ...
+        rhow.*du_x./(dx)  + rhow.*dv_y./(dy)  + rhow.*dw_z./(dz);
+    rhoE_conv =  u.*drhoh_x./(dx)  + v.*drhoh_y./(dy)  + w.*drhoh_z./(dz) + ...
+        rhoh.*du_x./(dx)  + rhoh.*dv_y./(dy)  + rhoh.*dw_z./(dz);
+        
+    % Set outer points to 0
+    rho_conv([1,end],:,:)    = 0;
+    rho_conv(:,[1,end],:)    = 0;
+    rho_conv(:,:,[1,end])    = 0;
+    rhou_conv([1,end],:,:)   = 0;
+    rhou_conv(:,[1,end],:)   = 0;
+    rhou_conv(:,:,[1,end])   = 0;
+    rhov_conv([1,end],:,:)   = 0;
+    rhov_conv(:,[1,end],:)   = 0;
+    rhov_conv(:,:,[1,end])   = 0;
+    rhow_conv([1,end],:,:)   = 0;
+    rhow_conv(:,[1,end],:)   = 0;
+    rhow_conv(:,:,[1,end])   = 0;
+    rhoE_conv([1,end],:,:)   = 0;
+    rhoE_conv(:,[1,end],:)   = 0;
+    rhoE_conv(:,:,[1,end])   = 0;
+    
+    C_u = {rho_conv, rhou_conv, rhov_conv, rhow_conv, rhoE_conv};
+
+    % C_fi - Advective
+    rho_conv  = drhou_x./(dx)  + drhov_y./(dy)  + drhow_z./(dz) + ...
+        0*rhou./(dx)  + 0*rhov./(dy)  + 0*rhow./(dz);
+    rhou_conv = u.*drhou_x./(dx)  + u.*drhov_y./(dy)  + u.*drhow_z./(dz) + ...
+        rhou.*du_x./(dx)  + rhov.*du_y./(dy)  + rhow.*du_z./(dz);
+    rhov_conv = v.*drhou_x./(dx)  + v.*drhov_y./(dy)  + v.*drhow_z./(dz) + ...
+        rhou.*dv_x./(dx)  + rhov.*dv_y./(dy)  + rhow.*dv_z./(dz);
+    rhow_conv = w.*drhou_x./(dx)  + w.*drhov_y./(dy)  + w.*drhow_z./(dz) + ...
+        rhou.*dw_x./(dx)  + rhov.*dw_y./(dy)  + rhow.*dw_z./(dz);
+    rhoE_conv =  h.*drhou_x./(dx)  + h.*drhov_y./(dy)  + h.*drhow_z./(dz) + ...
+        rhou.*dh_x./(dx)  + rhov.*dh_y./(dy)  + rhow.*dh_z./(dz);
+
+    % Set outer points to 0
+    rho_conv([1,end],:,:)    = 0;
+    rho_conv(:,[1,end],:)    = 0;
+    rho_conv(:,:,[1,end])    = 0;
+    rhou_conv([1,end],:,:)   = 0;
+    rhou_conv(:,[1,end],:)   = 0;
+    rhou_conv(:,:,[1,end])   = 0;
+    rhov_conv([1,end],:,:)   = 0;
+    rhov_conv(:,[1,end],:)   = 0;
+    rhov_conv(:,:,[1,end])   = 0;
+    rhow_conv([1,end],:,:)   = 0;
+    rhow_conv(:,[1,end],:)   = 0;
+    rhow_conv(:,:,[1,end])   = 0;
+    rhoE_conv([1,end],:,:)   = 0;
+    rhoE_conv(:,[1,end],:)   = 0;
+    rhoE_conv(:,:,[1,end])   = 0;
+    
+    C_fi = {rho_conv, rhou_conv, rhov_conv, rhow_conv, rhoE_conv};
+
+
+    % C_rho - Advective KG
+    rho_conv  = rho.*du_x./(dx)  + rho.*dv_y./(dy)  + rho.*dw_z./(dz) + ...
+        u.*drho_x./(dx)  + v.*drho_y./(dy)  + w.*drho_z./(dz);
+    rhou_conv = rho.*duu_x./(dx)  + rho.*duv_y./(dy)  + rho.*duw_z./(dz) + ...
+        u.*u.*drho_x./(dx)  + u.*v.*drho_y./(dy)  + u.*w.*drho_z./(dz);
+    rhov_conv = rho.*duv_x./(dx)  + rho.*dvv_y./(dy)  + rho.*dvw_z./(dz) + ...
+        v.*u.*drho_x./(dx)  + v.*v.*drho_y./(dy)  + v.*w.*drho_z./(dz);
+    rhow_conv = rho.*duw_x./(dx)  + rho.*dvw_y./(dy)  + rho.*dww_z./(dz) + ...
+        w.*u.*drho_x./(dx)  + w.*v.*drho_y./(dy)  + w.*w.*drho_z./(dz);
+    rhoE_conv =  rho.*duh_x./(dx)  + rho.*dvh_y./(dy)  + rho.*dwh_z./(dz) + ...
+        h.*u.*drho_x./(dx)  + h.*v.*drho_y./(dy)  + h.*w.*drho_z./(dz);
+
+    % Set outer points to 0
+    rho_conv([1,end],:,:)    = 0;
+    rho_conv(:,[1,end],:)    = 0;
+    rho_conv(:,:,[1,end])    = 0;
+    rhou_conv([1,end],:,:)   = 0;
+    rhou_conv(:,[1,end],:)   = 0;
+    rhou_conv(:,:,[1,end])   = 0;
+    rhov_conv([1,end],:,:)   = 0;
+    rhov_conv(:,[1,end],:)   = 0;
+    rhov_conv(:,:,[1,end])   = 0;
+    rhow_conv([1,end],:,:)   = 0;
+    rhow_conv(:,[1,end],:)   = 0;
+    rhow_conv(:,:,[1,end])   = 0;
+    rhoE_conv([1,end],:,:)   = 0;
+    rhoE_conv(:,[1,end],:)   = 0;
+    rhoE_conv(:,:,[1,end])   = 0;
+    
+    C_rho = {rho_conv, rhou_conv, rhov_conv, rhow_conv, rhoE_conv};
+
+
+    %% C_L - Advective linear
+    rho_conv  = rho.*du_x./(dx)  + rho.*dv_y./(dy)  + rho.*dw_z./(dz) + ...
+        0*rho.*u./(dx)  + 0*rho.*v./(dy)  + 0*rho.*w./(dz) + ...
+        u.*drho_x./(dx)    + v.*drho_y./(dy)      + w.*drho_z./(dz);
+    rhou_conv  = rho.*u.*du_x./(dx)  + rho.*u.*dv_y./(dy)  + rho.*u.*dw_z./(dz) + ...
+        rho.*u.*du_x./(dx)  + rho.*v.*du_y./(dy)  + rho.*w.*du_z./(dz) + ...
+        u.*u.*drho_x./(dx)  + u.*v.*drho_y./(dy)  + u.*w.*drho_z./(dz);
+    rhov_conv  = rho.*v.*du_x./(dx)  + rho.*v.*dv_y./(dy)  + rho.*v.*dw_z./(dz) + ...
+        rho.*u.*dv_x./(dx)  + rho.*v.*dv_y./(dy)  + rho.*w.*dv_z./(dz) + ...
+        v.*u.*drho_x./(dx)  + v.*v.*drho_y./(dy)  + v.*w.*drho_z./(dz);
+    rhow_conv  = rho.*w.*du_x./(dx)  + rho.*w.*dv_y./(dy)  + rho.*w.*dw_z./(dz) + ...
+        rho.*u.*dw_x./(dx)  + rho.*v.*dw_y./(dy)  + rho.*w.*dw_z./(dz) + ...
+        w.*u.*drho_x./(dx)  + w.*v.*drho_y./(dy)  + w.*w.*drho_z./(dz);
+    rhoE_conv  = rho.*h.*du_x./(dx)  + rho.*h.*dv_y./(dy)  + rho.*h.*dw_z./(dz) + ...
+        rho.*u.*dh_x./(dx)  + rho.*v.*dh_y./(dy)  + rho.*w.*dh_z./(dz) + ...
+        h.*u.*drho_x./(dx)  + h.*v.*drho_y./(dy)  + h.*w.*drho_z./(dz);
+
+    % Set outer points to 0
+    rho_conv([1,end],:,:)    = 0;
+    rho_conv(:,[1,end],:)    = 0;
+    rho_conv(:,:,[1,end])    = 0;
+    rhou_conv([1,end],:,:)   = 0;
+    rhou_conv(:,[1,end],:)   = 0;
+    rhou_conv(:,:,[1,end])   = 0;
+    rhov_conv([1,end],:,:)   = 0;
+    rhov_conv(:,[1,end],:)   = 0;
+    rhov_conv(:,:,[1,end])   = 0;
+    rhow_conv([1,end],:,:)   = 0;
+    rhow_conv(:,[1,end],:)   = 0;
+    rhow_conv(:,:,[1,end])   = 0;
+    rhoE_conv([1,end],:,:)   = 0;
+    rhoE_conv(:,[1,end],:)   = 0;
+    rhoE_conv(:,:,[1,end])   = 0;
+
+    C_L = {rho_conv, rhou_conv, rhov_conv, rhow_conv, rhoE_conv};
+
+end
+
