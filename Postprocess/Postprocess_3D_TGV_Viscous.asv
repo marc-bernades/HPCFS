@@ -1,0 +1,94 @@
+%% Postprocess 1D Adv Inviscid Shima
+
+%% 1D Advective test
+% Load results
+KGP        = readtable('output_data_3D_TGV_Viscous_64x64x64_KGP_100_Time.csv');
+KGP_P      = readtable('output_data_3D_TGV_Viscous_64x64x64_KGP_P_100_Time.csv');
+HLLC       = readtable('output_data_3D_TGV_Viscous_64x64x64_HLLC_2_Time.csv');
+Div        = readtable('output_data_3D_TGV_Viscous_64x64x64_Div_4_Time.csv');
+% Div_G      = readtable('output_data_3D_TGV_Viscous_64x64x64_Div_G_125.6637_Time.csv');
+Div_F4     = readtable('output_data_3D_TGV_Viscous_64x64x64_Div_F4_40_Time.csv');
+Div_F2     = readtable('output_data_3D_TGV_Viscous_64x64x64_Div_F2_30_Time.csv');
+Shima      = readtable('output_data_3D_TGV_Viscous_64x64x64_Shima_100_Time.csv');
+% Hybrid     = readtable('output_data_3D_TGV_Viscous_64x64x64_Hybrid_100_Time.csv');
+% WENO5      = readtable('output_data_3D_TGV_Viscous_64x64x64_WENO5_100_Time.csv');
+
+
+% Reference time
+t_c = 2*pi;
+
+
+figure
+title('3D TGV Viscous 64x64x64')
+plot(KGP.t_vec/t_c,KGP.ke_total/KGP.ke_total(1),'LineWidth',2,'LineStyle','-')
+hold on
+% plot(HLLC.t_vec(10:50:end)/KGP.t_vec(end),HLLC.ke_total(10:50:end)/HLLC.ke_total(1),'--o','LineWidth',2,'MarkerSize',3)
+plot(Div.t_vec/t_c,Div.ke_total/Div.ke_total(1),'LineWidth',2,'LineStyle',':','color',[0.4660, 0.6740, 0.1880])
+plot(Shima.t_vec/t_c,Shima.ke_total/Shima.ke_total(1),'LineWidth',2,'LineStyle','--','color',[0.3010 0.7450 0.9330])
+plot(HLLC.t_vec(10:50:end)/t_c,HLLC.ke_total(10:50:end)/HLLC.ke_total(1),'--o','LineWidth',2,'MarkerSize',3)
+plot(KGP_P.t_vec/t_c,KGP_P.ke_total/KGP_P.ke_total(1),'LineWidth',2,'LineStyle','-.','color',[0.6350 0.0780 0.1840])
+
+grid on
+xlabel('${{t}/{t_c}}$','interpreter','latex')
+ylabel('${{k_e}/{{k_e}_{0}}}$','interpreter','latex')
+set(gca,'linewidth',1.5)
+set(gca,'fontsize',12)
+ylim([0 1.2])
+xlim([0 1*2*pi])
+pbaspect([1.8 1 1])
+legend('KGP','Div','Shima','HLLC','KGP w/P')
+legend('Location','northeast','box','off')
+saveas(gca,'Results/3D_TGV_Viscous/3D_TGV_Viscous_ke','epsc')
+
+% Compute gradients
+KGP.dKe   = -gradient(KGP.ke_total,KGP.t_vec);
+Div.dKe   = -gradient(Div.ke_total,Div.t_vec);
+Shima.dKe = -gradient(Shima.ke_total,Shima.t_vec);
+HLLC.dKe  = -gradient(HLLC.ke_total,HLLC.t_vec);
+KGP_P.dKe = -gradient(DivFilt_I.ke_total,DivFilt_I.t_vec);
+
+
+figure
+title('3D TGV Viscous 64x64x64')
+plot(KGP.t_vec/t_c,KGP.dKe,'LineWidth',2,'LineStyle','-')
+hold on
+plot(Div.t_vec/t_c,Div.dKe,'LineWidth',2,'LineStyle',':','color',[0.4660, 0.6740, 0.1880])
+plot(Shima.t_vec/t_c,Shima.dKe,'LineWidth',2,'LineStyle','--','color',[0.3010 0.7450 0.9330])
+% plot(HLLC.t_vec(10:50:end)/t_c,HLLC.ke_total(10:50:end)/HLLC.ke_total(1),'--o','LineWidth',2,'MarkerSize',3)
+plot(KGP_P.t_vec/t_c,KGP_P.dKe,'LineWidth',2,'LineStyle','-.')
+grid on
+xlabel('${{t}/{t_c}}$','interpreter','latex')
+ylabel('${-d{{k_e}/{dt}}}$','interpreter','latex')
+set(gca,'linewidth',1.5)
+set(gca,'fontsize',12)
+% ylim([0 1.2])
+xlim([0 5])
+pbaspect([1.8 1 1])
+legend('KGP','Div','Shima','KGP w/P')
+legend('Location','northeast','box','off')
+saveas(gca,'Results/3D_TGV_Viscous/3D_TGV_Viscous_dkedt','epsc')
+
+
+%% Turbulent spectra
+% Load results
+DATA        = readtable('output_data_3D_TGV_Viscous_64x64x64_KGP_5.csv');
+
+% Index unique Z (2D - X,Y)
+Index_Z = unique(DATA.Z); Index_Z = find(DATA.Z == Index_Z(2));
+Index = Index_Z;
+x = unique(DATA.X);
+y = unique(DATA.Y);
+z = unique(DATA.Z);
+[X,Y,Z] = meshgrid(x,y,z);
+
+% Reshape speeds
+u = DATA.u;
+U = reshape(u,[length(y),length(x),length(z)]);
+v = DATA.v;
+V = reshape(v,length(y),length(x),length(z));
+w = DATA.w;
+W = reshape(w,length(y),length(x),length(z));
+res = 25;
+
+[k_mag, e_k_mag] = Calculate_TurbulentSpectra(U,V,W,res);
+plot_TurbulentSpectra(k_mag, e_k_mag)
