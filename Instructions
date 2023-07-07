@@ -43,7 +43,8 @@ The boundary conditions are to be defined based on the self-intuitive comments o
 2. Compressible flow solver (HPCFS)
 
 Based on "compressibe_solver.m" function where the inputs are previously defined by the problem parameters. The structure of this function is the same regardless the type of test
-This will save on the workspace the output functions. However, data will be saved for each snapshot as well which can be further postprocessed
+This will save on the workspace the output functions. However, data will be saved for each snapshot as well which can be further postprocessed.
+The results will be saved under "Results" folder on the working directory, hence it is recommended to make such a directory with the subfolders of the name of the test performed following the following labels: 1D_Adv, 1D_HighPressure, 2D_LidDrivenCavity, 2D_MixingLayer, 3D_TGV, 3D_TGV_Viscous.
 
 3. Embedded setup functions
 
