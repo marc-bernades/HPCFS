@@ -1,0 +1,17 @@
+%% Codegen compile functions
+u = coder.typeof(0,[100 100 100],1);
+codegen CentralDerivative_d1_2ndOrder -args {u}
+
+% T = coder.typeof(0,[],1);
+% Substance = coder.typeof('string');
+% codegen PengRobinson -args {T,Substance}
+
+% P_current  = coder.typeof(0,[],1);
+% T_current  = coder.typeof(0,[],1);
+% e_target   = coder.typeof(0,[],1);
+% rho_target = coder.typeof(0,[],1);
+% codegen Optimize_PTerho -args {P_current,T_current,e_target,rho_target,Substance}
+% 
+% 
+% cfg = coder.config('mex');
+% codegen -config cfg solverroot
